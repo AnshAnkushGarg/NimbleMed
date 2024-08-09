@@ -1,5 +1,4 @@
 [theme]
 backgroundColor = "#002b2c"
 primaryColor = "#00c9c1"
-headless=True
-serverAddress = “0.0.0.0”
+serverAddress = '0.0.0.0'
