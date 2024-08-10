@@ -50,8 +50,10 @@ class_names = ['Psoriasis',
  'drug reaction',
  'peptic ulcer disease',
  'diabetes']
-
-model = tf.keras.models.load_model('model_4_Bidirectional.keras')
+try:
+  model = tf.keras.models.load_model('model_4_Bidirectional.keras')
+except Exception as e:
+  print(e)
 
 
 
@@ -60,13 +62,14 @@ st.markdown("<h1 style='text-align: center; color: #00c9c1;'>NimbleMed+</h1>", u
 st.markdown("<h1 style='text-align: center; color: #00c9c1;'>We heal because we feel!</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #00c9c1;'>Need help identiftying your disease? We got you covered! We use NLP and Deep Learning Recurrent Neural Networks to classify your symptoms into diseases!</p>", unsafe_allow_html=True)
 
-
-
+st.markdown("<h3 style='color: #00c9c1;'>Symptom to Disease </h3>", unsafe_allow_html=True)
 
 with st.form("symptoms"):
   word = "are"
+  st.markdown("<p style='color: #00c9c1;'>For more precise results, please be more specific with your description of the symptomns and write sensible sentences.</p>", unsafe_allow_html=True)
 
-  symptom = st.text_input(":blue[Enter your symptoms]")
+  st.markdown("<h4 style='color: #00c9c1;'>Enter your symptoms: </h4", unsafe_allow_html=True)
+  symptom = st.text_input("")
   submitted = st.form_submit_button("Submit", type="primary")
   if submitted:
     pred = model.predict(pd.Series([symptom]))
@@ -99,7 +102,7 @@ with st.form("symptoms"):
       output = (f"{index}. You could be suffering from disease: {disease} with a probability of {prob}% and the medicine(s) you should take {word} {drugs}.")
       st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
 
-    st.caption(":blue[Note: source of drugs: openFDA]")
+    st.caption(":blue[Note: source of drugs is from openFDA]")
 
 st.markdown("""
     <style>
@@ -110,7 +113,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-
+st.markdown("<h3 style='color: #00c9c1;'>Nearest Pharmacy Location <br> </h3>", unsafe_allow_html=True)
 
 geo = ('Click the button below so that we can pinpoint your location (click "allow" if any popup appears) and then wait until the nearest pharmacy is displayed <br> <br>')
 
@@ -124,23 +127,8 @@ lon = location["longitude"]
 try:
   pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
 
-  output = f"Nearest pharmacy near you is: {pharmacy} <br> Customize latitude and longitude here:"
+  output = f"Nearest pharmacy near you is: {pharmacy}"
 
   st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
 except Exception as e:
   print(e)
-
-with st.form("latloncustom"):
-    lat = st.number_input(":blue[Latitude]", value=lat, step=0.1, format="%.4f")
-    lon = st.number_input(":blue[Longitude]", value=lon, step=0.1, format="%.4f")
-    submitted = st.form_submit_button("Submit", type="primary")
-  
-    if submitted:
-      pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
-      
-      output = f"Nearest pharmacy near {loc} is {pharmacy}"
-      st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
-  
-      output = f"Nearest pharmacy near {loc} is {pharmacy}"
-      st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
-  
