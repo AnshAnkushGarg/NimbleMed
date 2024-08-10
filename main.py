@@ -55,17 +55,17 @@ model = tf.keras.models.load_model('model_4_Bidirectional.keras')
 
 
 
-st.image("MicrosoftTeams-image (5).png", width=75)
+st.image("MicrosoftTeams-image (5).png", width=100)
 st.markdown("<h1 style='text-align: center; color: #00c9c1;'>NimbleMed+</h1>", unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center; color: #00c9c1;'>We heal because we feel!</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #00c9c1;'>Need help identiftying your disease? We got you covered! We use NLP and Deep Learning Recurrent Neural Networks to classify your symptoms into diseases!</p>", unsafe_allow_html=True)
 
-st.subheader(":blue[Symptoms To Disease]")
+
 
 
 with st.form("symptoms"):
   word = "are"
-  st.write(":blue[For more precise results, be more specific with your symptoms]")
+
   symptom = st.text_input(":blue[Enter your symptoms]")
   submitted = st.form_submit_button("Submit", type="primary")
   if submitted:
@@ -111,7 +111,6 @@ st.markdown("""
 
 
 
-st.subheader(":blue[Nearest Pharmacy Location]")
 
 geo = ('Click the button below so that we can pinpoint your location (click "allow" if any popup appears) and then wait until the nearest pharmacy is displayed <br> <br>')
 
@@ -139,6 +138,9 @@ with st.form("latloncustom"):
     if submitted:
       pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
       
+      output = f"Nearest pharmacy near {loc} is {pharmacy}"
+      st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
+  
       output = f"Nearest pharmacy near {loc} is {pharmacy}"
       st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
   
