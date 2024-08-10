@@ -1,4 +1,6 @@
 [theme]
 backgroundColor = "#002b2c"
 primaryColor = "#00c9c1"
-serverAddress = '0.0.0.0'
+
+[server]
+address = '0.0.0.0'
