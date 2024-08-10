@@ -125,9 +125,20 @@ lon = location["longitude"]
 try:
   pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
 
-  output = f"Nearest pharmacy near you is: {pharmacy}"
+  output = f"Nearest pharmacy near you is: {pharmacy} <br> Customize latitude and longitude here:"
 
   st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
 except Exception as e:
   print(e)
+
+with st.form("latloncustom"):
+    lat = st.number_input(":blue[Latitude]", value=lat, step=0.1, format="%.4f")
+    lon = st.number_input(":blue[Longitude]", value=lon, step=0.1, format="%.4f")
+    submitted = st.form_submit_button("Submit", type="primary")
+  
+    if submitted:
+      pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
+      
+      output = f"Nearest pharmacy near {loc} is {pharmacy}"
+      st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
   
