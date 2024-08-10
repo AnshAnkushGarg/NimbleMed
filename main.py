@@ -3,12 +3,10 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import requests
-import geocoder
 from streamlit_geolocation import streamlit_geolocation
 
 def get_nearest_pharmacy(lat, lon):
   key = "f81255b6de0341ac98857d2c8d83f833"
-
   r = requests.get(f"https://api.geoapify.com/v1/geocode/reverse?lat={lat}&lon={lon}&format=json&apiKey={key}")
 
   data = r.json()
@@ -62,9 +60,12 @@ st.markdown("<h1 style='text-align: center; color: #00c9c1;'>NimbleMed+</h1>", u
 st.markdown("<h1 style='text-align: center; color: #00c9c1;'>We heal because we feel!</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #00c9c1;'>Need help identiftying your disease? We got you covered! We use NLP and Deep Learning Recurrent Neural Networks to classify your symptoms into diseases!</p>", unsafe_allow_html=True)
 
+st.subheader(":blue[Symptoms To Disease]")
+
 
 with st.form("symptoms"):
   word = "are"
+  st.write(":blue[For more precise results, be more specific with your symptoms]")
   symptom = st.text_input(":blue[Enter your symptoms]")
   submitted = st.form_submit_button("Submit", type="primary")
   if submitted:
@@ -93,10 +94,12 @@ with st.form("symptoms"):
       if len(drugs_list) == 1:
         word = "is"
       
-        
+      index = list(medicines_diseases.keys()).index(key)+1
       
-      output = (f"You could be suffering from disease {disease} with a probability of {prob}% and the medicine(s) you should take {word} {drugs}.")
+      output = (f"{index}. You could be suffering from disease: {disease} with a probability of {prob}% and the medicine(s) you should take {word} {drugs}.")
       st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
+
+    st.caption(":blue[Note: source of drugs: openFDA]")
 
 st.markdown("""
     <style>
@@ -108,37 +111,23 @@ st.markdown("""
 
 
 
+st.subheader(":blue[Nearest Pharmacy Location]")
 
-with st.form("latlong"):
-  geo = ('Click the crosshair button so that we can pinpoint your location (click "allow" if any popup appears) and then click "submit" to continue. You can also scroll further and customize the location where you want to find a pharmacy by setting a custom latitude or longitude')
+geo = ('Click the button below so that we can pinpoint your location (click "allow" if any popup appears) and then wait until the nearest pharmacy is displayed <br> <br>')
 
   
-  st.markdown("<p style='text-align: center; color: #00f9f1;'>" + geo + "</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: #00f9f1;'>" + geo + "</p>", unsafe_allow_html=True)
 
-  location = streamlit_geolocation()
-  lat = location["latitude"]
-  lon = location["longitude"]
+location = streamlit_geolocation()
+lat = location["latitude"]
+lon = location["longitude"]
 
-  submit = st.form_submit_button("Submit", type="primary")
+try:
+  pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
 
-  if submit:
-    try:
-      pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
+  output = f"Nearest pharmacy near you is: {pharmacy}"
 
-      output = f"Nearest pharmacy near you is: {pharmacy} <br> Customize Latitude and Longitude here:"
-
-      st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
-    except Exception as e:
-      print(e)
-
-with st.form("latloncustom"):
-    lat = st.number_input(":blue[Latitude]", value=lat, step=0.1, format="%.4f")
-    lon = st.number_input(":blue[Longitude]", value=lon, step=0.1, format="%.4f")
-    submitted = st.form_submit_button("Submit", type="primary")
-  
-    if submitted:
-      pharmacy, loc = get_nearest_pharmacy(lat=lat, lon=lon)
-      
-      output = f"Nearest pharmacy near {loc} is {pharmacy}"
-      st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
+  st.markdown("<p style='color: #00f9f1;'>" + output + "</p>", unsafe_allow_html=True)
+except Exception as e:
+  print(e)
   
